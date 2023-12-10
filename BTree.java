@@ -1,3 +1,5 @@
+@SuppressWarnings("rawtypes")
+
 class Node {
 
 	public Comparable data;
@@ -108,7 +110,6 @@ class BTree {
 				else
 					parent.left = substitute;
 				return true;
-
 	}
 
 	public void displayTree() {
@@ -152,5 +153,139 @@ class BTree {
 		}  // end while isRowEmpty is false
 		System.out.println(
 		"......................................................");
+	}
+
+	// EXERCISE 9-5
+
+	// a) Count the number of nodes in a tree
+	public int size() {
+		return size(root);
+	}
+
+	private int size(Node node) {
+		if (node == null)
+			return 0;
+		return 1 + size(node.left) + size(node.right);
+	}
+
+	// b) Count the number of leaves in the tree
+	public int numLeaves() {
+		return numLeaves(root);
+	}
+
+	private int numLeaves(Node node) {
+		if (node == null)
+			return 0;
+
+		if (node.left == null && node.right == null) 
+			return 1;
+
+		return numLeaves(node.left) + numLeaves(node.right);
+	}
+
+	// c) Calculate the sum of all nodes in the tree of integers
+	public int sum() {
+		return sum(root);
+	}
+
+	private int sum(Node node) {
+		if (node == null)
+			return 0;
+		
+		return (int) node.data + sum(node.left) + sum(node.right);
+	}
+
+	// d) Check if the tree is a binary search tree
+	public boolean isBST() {
+		return isBST(root, null, null);
+	}
+
+	private boolean isBST(Node node, Comparable min, Comparable max) {
+		if (node == null)
+			return true;
+
+		if (min != null && node.data.compareTo(min) <= 0 || max != null && node.data.compareTo(max) >= 0)
+			return false;
+
+		return isBST(node.left, min, node.data) && isBST(node.right, node.data, max);
+	}
+
+	// e) Count the number of nodes having a left child and no right child
+	public int numLeftChildNodes() {
+		return numLeftChildNodes(root);
+	}
+
+	private int numLeftChildNodes(Node node) {
+		if (node == null) {
+			return 0;
+		}
+		int count = 0;
+		if (node.left != null && node.right == null) 
+			count = 1; 
+
+		return count + numLeftChildNodes(node.left) + numLeftChildNodes(node.right);
+	}
+
+	// f) Count the occurrences of nodes with the given key
+	public int countOccur(Comparable key) {
+		return countOccur(root, key);
+	}
+
+	private int countOccur(Node node, Comparable key) {
+		if (node == null) {
+			return 0;
+		}
+		int count = 0;
+		if (node.data.equals(key)) {
+			count = 1;
+		}
+		return count + countOccur(node.left, key) + countOccur(node.right, key);
+	}
+
+	// g) Check if the tree has duplicates of the given key
+	public boolean hasDup(Comparable key) {
+		return countOccur(key) > 1;
+	}
+
+	// h) Convert the binary tree into its mirror
+	public void mirror() {
+		mirror(root);
+	}
+
+	private void mirror(Node node) {
+		if (node != null) {
+			Node temp = node.left;
+			node.left = node.right;
+			node.right = temp;
+			mirror(node.left);
+			mirror(node.right);
+		}
+	}
+
+	// i) Get a sequence of odd numbers in the tree as a String
+	public String oddNodes() {
+		StringBuilder result = new StringBuilder();
+		oddNodes(root, result);
+		return result.toString();
+	}
+
+	private void oddNodes(Node node, StringBuilder result) {
+		if (node != null) {
+			if ((int) node.data % 2 != 0) {
+				result.append(node.data).append(" ");
+			}
+			oddNodes(node.left, result);
+			oddNodes(node.right, result);
+		}
+	}
+
+	public static void main(String[] args) {
+		BTree bt = new BTree();
+		bt.root.data = 1;
+		bt.root.left.data = 2;
+		bt.root.left.left.data = 10;
+		bt.root.right.data = 3;
+		bt.root.right.left.data = 4;
+		bt.root.right.right.data = 5;
 	}
 }
